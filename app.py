@@ -97,9 +97,12 @@ else:
                 receiver = data.get('receiver')
                 text = data.get('text', '')
                 
-                if (sender == st.session_state.user and receiver == st.session_state.chat_with) or \
-                   (sender == st.session_state.chat_with and receiver == st.session_state.user):
-                    
+                cond1 = (sender == st.session_state.user)
+                cond2 = (receiver == st.session_state.chat_with)
+                cond3 = (sender == st.session_state.chat_with)
+                cond4 = (receiver == st.session_state.user)
+                
+                if (cond1 and cond2) or (cond3 and cond4):
                     is_me = sender == st.session_state.user
                     avatar = "user" if is_me else "assistant"
                     with st.chat_message(avatar):
@@ -109,8 +112,4 @@ else:
         if prompt := st.chat_input("Type a message..."):
             db.collection("messages").add({
                 "sender": st.session_state.user,
-                "receiver": st.session_state.chat_with,
-                "text": prompt,
-                "time": time.time()
-            })
-            st.
+                "receiver": st.session_state.chat_w
