@@ -1,0 +1,43 @@
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 5rem;
+    max-width: 700px;
+}
+
+.stChatMessage {
+    background-color: #232e3c;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border: 1px solid #2f3b4c;
+}
+
+.stChatMessage p {
+    color: #f5f5f5;
+    font-size: 15px;
+}
+
+.stButton>button {
+    width: 100%;
+    border-radius: 20px;
+    background-color: #0088cc;
+    color: white;
+    border: none;
+}
+
+.stTextInput>div>div>input {
+    border-radius: 15px;
+    background-color: #1c2733;
+    color: white;
+    border: 1px solid #2f3b4c;
+}
+
+.stChatInput>div>div>input {
+    border-radius: 25px;
+    background-color: #1c2733;
+    color: white;
+}
