@@ -190,3 +190,75 @@ else:
 
                 if st.button(label, key=name):
  
+                    st.session_state.chat = name
+                    st.rerun()
+
+    # CHAT
+
+    if st.session_state.chat:
+        other = st.session_state.chat
+
+        if st.button("Back to users"):
+            st.session_state.chat = None
+            st.rerun()
+
+        st.title(other)
+
+        status = "ONLINE" if online(other) else "OFFLINE"
+        st.caption(status)
+
+        set_read(other)
+
+        messages = db.collection("messages").stream()
+        chat_messages = []
+
+        for item in messages:
+            msg = item.to_dict()
+
+            pair = (
+                msg.get("sender") == me
+                and msg.get("receiver") == other
+            )
+
+            reverse = (
+                msg.get("sender") == other
+                and msg.get("receiver") == me
+            )
+
+            if pair or reverse:
+                chat_messages.append(msg)
+
+        chat_messages.sort(
+            key=lambda x: x.get("time", 0)
+        )
+
+        with st.container(height=400):
+            for msg in chat_messages:
+                sender = msg.get("sender", "")
+
+                with st.chat_message(
+                    "user" if sender == me else "assistant"
+                ):
+                    st.write(msg.get("text", ""))
+
+                    stamp = msg.get("time", 0)
+                    st.caption(
+                        datetime.fromtimestamp(
+                            stamp
+                        ).strftime("%H:%M")
+                    )
+
+        with st.form("send", clear_on_submit=True):
+            msg_text = st.text_input("Message")
+            send = st.form_submit_button("Send")
+
+            if send and msg_text.strip():
+                db.collection("messages").add({
+                    "sender": me,
+                    "receiver": other,
+                    "text": msg_text.strip(),
+                    "time": time.time(),
+                    "read": False
+                })
+
+                st.rerun()
