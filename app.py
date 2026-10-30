@@ -74,8 +74,8 @@ else:
         found_users = []
         for u in users_ref:
             u_data = u.to_dict()
-            if u_data['username'] != st.session_state.user:
-                if search_query.lower() in u_data['username'].lower():
+            if u_data.get('username') != st.session_state.user:
+                if search_query.lower() in u_data.get('username', '').lower():
                     found_users.append(u_data['username'])
         
         for f_user in found_users:
@@ -93,14 +93,18 @@ else:
             messages_ref = db.collection("messages").order_by("time").stream()
             for msg in messages_ref:
                 data = msg.to_dict()
-                if (data['sender'] == st.session_state.user and data['receiver'] == st.session_state.chat_with) or \
-                   (data['sender'] == st.session_state.chat_with and data['receiver'] == st.session_state.user):
+                sender = data.get('sender')
+                receiver = data.get('receiver')
+                text = data.get('text', '')
+                
+                if (sender == st.session_state.user and receiver == st.session_state.chat_with) or \
+                   (sender == st.session_state.chat_with and receiver == st.session_state.user):
                     
-                    is_me = data['sender'] == st.session_state.user
+                    is_me = sender == st.session_state.user
                     avatar = "user" if is_me else "assistant"
                     with st.chat_message(avatar):
-                        st.write(data['sender'])
-                        st.write(data['text'])
+                        st.write(sender)
+                        st.write(text)
 
         if prompt := st.chat_input("Type a message..."):
             db.collection("messages").add({
@@ -109,6 +113,4 @@ else:
                 "text": prompt,
                 "time": time.time()
             })
-            st.rerun()
-    else:
-        st.info("Search for a user to start a private chat.")
+            st.
