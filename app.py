@@ -110,6 +110,7 @@ else:
                         st.write(text)
 
         if prompt := st.chat_input("Type a message..."):
-            db.collection("messages").add({
-                "sender": st.session_state.user,
-                "receiver": st.session_state.chat_w
+            new_msg = {}
+            new_msg["sender"] = st.session_state.user
+            new_msg["receiver"] = st.session_state.chat_with
+    
